@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import '../adminpages/notespape.dart';
+import '../adminpages/questionpaper.dart';
+import '../adminpages/studentDetail.dart';
+import '../widgets/bottonav.dart';
 import 'login.dart';
 
 class Student extends StatefulWidget {
@@ -11,22 +14,46 @@ class Student extends StatefulWidget {
 }
 
 class _StudentState extends State<Student> {
+  int _selectIndex = 0;
+  void navigatorBottomBar(int index) {
+    setState(() {
+      _selectIndex = index;
+    });
+  }
+
+  //pages to display
+  List<Widget> _pages = [
+    StudentDetails(),
+    QuestionPages(),
+    NotesPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar:
+          BottomNav(selectedTab: (index) => navigatorBottomBar(index)),
       appBar: AppBar(
-        title: Text("Student"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              logout(context);
-            },
-            icon: Icon(
-              Icons.logout,
-            ),
-          )
-        ],
+        title: const Text(
+          "Student Name",
+          style: TextStyle(color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: CircleAvatar(
+            // radius: ,
+            child: IconButton(
+                onPressed: () => logout(context),
+                icon: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                )),
+          ),
+        ),
       ),
+      body: _pages[_selectIndex],
     );
   }
 

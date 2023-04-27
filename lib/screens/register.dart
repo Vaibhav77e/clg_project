@@ -3,6 +3,7 @@ import 'package:clg_project/widgets/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../widgets/customTextForm.dart';
 import 'login.dart';
 // import 'model.dart';
@@ -28,6 +29,8 @@ class _RegisterState extends State<Register> {
   final TextEditingController mobile = TextEditingController();
   bool _isObscure = true;
   bool _isObscure2 = true;
+  final String assetName = 'assets/YIt_2.svg';
+
   File? file;
   var options = [
     'Student',
@@ -56,22 +59,19 @@ class _RegisterState extends State<Register> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 80,
+                        const SizedBox(
+                          height: 60,
                         ),
-                        Text(
-                          "Register Now",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 40,
+                        Container(
+                          child: SvgPicture.asset(
+                            assetName,
+                            semanticsLabel: 'Clg logo',
+                            width: 120,
+                            height: 120,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
-                        ),
-                        SizedBox(
-                          height: 50,
                         ),
 
                         // custom button
@@ -216,7 +216,7 @@ class _RegisterState extends State<Register> {
                               ),
                             ),
                             DropdownButton<String>(
-                              dropdownColor: Colors.blue[900],
+                              dropdownColor: Colors.white,
                               isDense: true,
                               isExpanded: false,
                               iconEnabledColor: Colors.purple,
@@ -313,7 +313,7 @@ class _RegisterState extends State<Register> {
   postDetailsToFirestore(String email, String rool) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
-    CollectionReference ref = FirebaseFirestore.instance.collection('users');
+    CollectionReference ref = firebaseFirestore.collection('users');
     ref
         .doc(user!.uid)
         .set({'name': name.text, 'email': emailController.text, 'role': rool});
