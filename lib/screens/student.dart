@@ -34,8 +34,8 @@ class _StudentState extends State<Student> {
       bottomNavigationBar:
           BottomNav(selectedTab: (index) => navigatorBottomBar(index)),
       appBar: AppBar(
-        title: const Text(
-          "Notes",
+        title: Text(
+          _pages[_selectIndex].toString(),
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0,

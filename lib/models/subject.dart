@@ -1,12 +1,14 @@
 class Subject {
+  final double id;
   final String imageUrl;
   final String subjectCode;
   final String scheme;
-  final String subjects;
+  final String subjectName;
 
   Subject(
-      {required this.imageUrl,
+      {required this.id,
+      required this.imageUrl,
       required this.subjectCode,
       required this.scheme,
-      required this.subjects});
+      required this.subjectName});
 }

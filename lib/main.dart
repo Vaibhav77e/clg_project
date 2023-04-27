@@ -1,3 +1,4 @@
+import 'package:clg_project/adminpages/notespape.dart';
 import 'package:clg_project/screens/register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
