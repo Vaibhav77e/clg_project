@@ -24,8 +24,8 @@ class _StudentState extends State<Student> {
   //pages to display
   List<Widget> _pages = [
     StudentDetails(),
-    QuestionPages(),
     NotesPage(),
+    QuestionPages(),
   ];
 
   @override
@@ -35,7 +35,7 @@ class _StudentState extends State<Student> {
           BottomNav(selectedTab: (index) => navigatorBottomBar(index)),
       appBar: AppBar(
         title: const Text(
-          "Student Name",
+          "Notes",
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0,
@@ -46,7 +46,7 @@ class _StudentState extends State<Student> {
             // radius: ,
             child: IconButton(
                 onPressed: () => logout(context),
-                icon: Icon(
+                icon: const Icon(
                   Icons.person,
                   color: Colors.black,
                 )),
@@ -58,7 +58,7 @@ class _StudentState extends State<Student> {
   }
 
   Future<void> logout(BuildContext context) async {
-    CircularProgressIndicator();
+    const CircularProgressIndicator();
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
       context,
