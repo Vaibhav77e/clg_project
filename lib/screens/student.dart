@@ -36,7 +36,7 @@ class _StudentState extends State<Student> {
       appBar: AppBar(
         title: Text(
           _pages[_selectIndex].toString(),
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class StudentDetails extends StatelessWidget {
-  const StudentDetails({super.key});
+  String name = '';
+  String usn = '';
+  String rfid = '';
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +17,36 @@ class StudentDetails extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.grey.shade300,
               borderRadius: BorderRadius.circular(12)),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [Text('Student Name')],
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Student Name : $name ',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    // function to record whether to find is present
+                    CircleAvatar(
+                      radius: 5,
+                      backgroundColor: Colors.green,
+                    )
+                  ],
                 ),
-              ),
-            ],
+                Text(
+                  'USN : $usn',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  'UId : $rfid',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
           ),
         ),
       ),
