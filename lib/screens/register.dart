@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../widgets/customTextForm.dart';
 import 'login.dart';
+import '../widgets/alert.dart';
 // import 'model.dart';
 
 class Register extends StatefulWidget {
@@ -300,13 +301,22 @@ class _RegisterState extends State<Register> {
 
   void signUp(String email, String password, String rool) async {
     CircularProgressIndicator();
-    if (_formkey.currentState!.validate()) {
-      await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore(email, rool)})
-          .catchError((e) {
-        print(e.toString());
-      });
+    try {
+      if (_formkey.currentState!.validate()) {
+        await _auth
+            .createUserWithEmailAndPassword(email: email, password: password)
+            .then((value) => {postDetailsToFirestore(email, rool)})
+            .catchError((e) {
+          print(e.toString());
+        });
+      }
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (builderctx) => Alert(
+                text: e.toString(),
+              ));
+      Navigator.of(context).pop();
     }
   }
 
