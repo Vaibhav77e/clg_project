@@ -1,9 +1,13 @@
+import 'package:clg_project/screens/pagesforstudent/home.dart';
+import 'package:clg_project/screens/pagesforstudent/questionpagesForStudents.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../adminpages/notespape.dart';
-import '../adminpages/questionpaper.dart';
-import '../adminpages/studentDetail.dart';
-import '../widgets/bottonav.dart';
+import '../../../adminpages/notespape.dart';
+import '../../../adminpages/questionpaper.dart';
+import '../../pagesforstudent/explore.dart';
+import '../../../widgets/bottonForStudent.dart';
+
+import '../signout/signOut.dart';
 import 'login.dart';
 
 class Student extends StatefulWidget {
@@ -23,16 +27,16 @@ class _StudentState extends State<Student> {
 
   //pages to display
   List<Widget> _pages = [
-    StudentDetails(),
-    NotesPage(),
-    QuestionPages(),
+    Home(),
+    ExplorePage(),
+    QuestionPagesforStudents(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar:
-          BottomNav(selectedTab: (index) => navigatorBottomBar(index)),
+      bottomNavigationBar: BottomNavForStudent(
+          selectedTab: (index) => navigatorBottomBar(index)),
       appBar: AppBar(
         title: Text(
           _pages[_selectIndex].toString(),
@@ -45,7 +49,12 @@ class _StudentState extends State<Student> {
           child: CircleAvatar(
             // radius: ,
             child: IconButton(
-                onPressed: () => logout(context),
+                onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Signout(),
+                      ),
+                    ),
                 icon: const Icon(
                   Icons.person,
                   color: Colors.black,

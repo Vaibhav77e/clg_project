@@ -1,12 +1,17 @@
-import 'package:clg_project/screens/student.dart';
-import 'package:clg_project/screens/teacher.dart';
+import 'dart:convert';
+
+import 'package:clg_project/screens/views/auth/student.dart';
+import 'package:clg_project/screens/views/auth/teacher.dart';
+import 'package:clg_project/widgets/customPasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widgets/button.dart';
+import '../../../widgets/button.dart';
 import 'package:flutter_svg/svg.dart';
-import '../widgets/customTextForm.dart';
+import '../../../widgets/customTextForm.dart';
 import 'register.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,7 +24,9 @@ class _LoginPageState extends State<LoginPage> {
   final _formkey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usnController = TextEditingController();
   final String assetName = 'assets/YIt_2.svg';
+  final String USN = '';
 
   final _auth = FirebaseAuth.instance;
   @override
@@ -46,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 // color: Colors.orangeAccent[700],
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.70,
+                height: MediaQuery.of(context).size.height,
                 child: Center(
                   child: Container(
                     margin: EdgeInsets.all(12),
@@ -74,37 +81,10 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             height: 20,
                           ),
-                          // CustomTextField(controller: emailController,text:'Email' ,validator: (value) {
-                          //     if (value!.length == 0) {
-                          //       return "Email cannot be empty";
-                          //     }
-                          //     if (!RegExp(
-                          //             "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                          //         .hasMatch(value)) {
-                          //       return ("Please enter a valid email");
-                          //     } else {
-                          //       return null;
-                          //     }
-                          //   },),
-                          TextFormField(
+
+                          CustomTextField(
                             controller: emailController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Email',
-                              enabled: true,
-                              contentPadding: const EdgeInsets.only(
-                                  left: 14.0, bottom: 8.0, top: 8.0),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue.shade700),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
+                            text: 'Email',
                             validator: (value) {
                               if (value!.length == 0) {
                                 return "Email cannot be empty";
@@ -122,38 +102,33 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             keyboardType: TextInputType.emailAddress,
                           ),
-                          SizedBox(
+
+                          const SizedBox(
                             height: 20,
                           ),
-                          TextFormField(
+
+                          //usn/employee
+                          CustomTextField(
+                            controller: usnController,
+                            text: 'USN/Empolyee id',
+                            validator: (value) {
+                              if (value!.length == 0) {
+                                return "Field can't be left empty";
+                              }
+                            },
+                            keyboardType: null,
+                            onSaved: (value) {
+                              usnController.text = value!;
+                            },
+                          ),
+
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          CustomPasswordField(
                             controller: passwordController,
-                            obscureText: _isObscure3,
-                            decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  icon: Icon(_isObscure3
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isObscure3 = !_isObscure3;
-                                    });
-                                  }),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Password',
-                              enabled: true,
-                              contentPadding: const EdgeInsets.only(
-                                  left: 14.0, bottom: 10.0, top: 15.0),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue.shade700),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
+                            text: 'Password',
                             validator: (value) {
                               RegExp regex = RegExp(r'^.{6,}$');
                               if (value!.isEmpty) {
@@ -165,11 +140,12 @@ class _LoginPageState extends State<LoginPage> {
                                 return null;
                               }
                             },
+                            obscureText: _isObscure3,
                             onSaved: (value) {
                               passwordController.text = value!;
                             },
-                            keyboardType: TextInputType.emailAddress,
                           ),
+
                           SizedBox(
                             height: 20,
                           ),
@@ -179,7 +155,10 @@ class _LoginPageState extends State<LoginPage> {
                               setState(() {
                                 visible = true;
                               });
-                              signIn(emailController.text,
+                              // signIn(emailController.text,
+                              //     passwordController.text);
+                              // cutomlogin(usnController.text);
+                              newsignIn(emailController.text,
                                   passwordController.text);
                             },
                             text: 'Sign In',
@@ -291,5 +270,73 @@ class _LoginPageState extends State<LoginPage> {
         print(e.toString());
       }
     }
+  }
+
+  void newroute() async {
+    const uri =
+        'https://clg-project-9ffdf-default-rtdb.asia-southeast1.firebasedatabase.app/usersData.json';
+    try {
+      final res = await http.get(Uri.parse(uri));
+      final extratedData = json.decode(res.body);
+      print(extratedData);
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Student(),
+        ),
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  // void newroute(String email) {
+  //   final ref = FirebaseDatabase.instance.ref();
+  //   ref.child('usersData').orderByChild('email').equalTo(email).once().then(
+  //     (DatabaseEvent event) {
+  //       DataSnapshot snapshot = event.snapshot;
+  //       if (snapshot.exists) {
+  //         // snapshot.forEach((child) {
+  //         //   Map<dynamic, dynamic> data = child.value! as Map<dynamic, dynamic>;
+  //         //   String? userType = data["userType"] as String?;
+  //         //   print('User type: $userType');
+  //         // });
+  //       } else {
+  //         print('No data found for email: $email');
+  //       }
+  //     },
+  //   );
+  // }
+
+  // testing
+  void newsignIn(String email, String password) async {
+    if (_formkey.currentState!.validate()) {
+      try {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        newroute();
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        }
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+  }
+}
+
+Future<void> cutomlogin(String token) async {
+  try {
+    final userCred = FirebaseAuth.instance.signInWithCustomToken(token);
+    print("success");
+  } on FirebaseAuthException catch (e) {
+    print(e.toString());
   }
 }

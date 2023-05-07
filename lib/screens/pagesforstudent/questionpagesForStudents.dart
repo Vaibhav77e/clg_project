@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 import 'package:path_provider/path_provider.dart';
 
-class NotesView extends StatefulWidget {
-  final String text;
-  const NotesView({required this.text});
+class QuestionPagesforStudents extends StatefulWidget {
+  const QuestionPagesforStudents({super.key});
 
   @override
-  State<NotesView> createState() => _NotesViewState();
+  State<QuestionPagesforStudents> createState() =>
+      _QuestionPagesforStudentsState();
 }
 
-class _NotesViewState extends State<NotesView> {
+class _QuestionPagesforStudentsState extends State<QuestionPagesforStudents> {
   int index = 0;
   String savename = '';
   late Future<ListResult> futureFiles;
@@ -24,28 +22,12 @@ class _NotesViewState extends State<NotesView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    futureFiles = FirebaseStorage.instance.ref('/${widget.text}').listAll();
+    futureFiles = FirebaseStorage.instance.ref('/notes').listAll();
   }
 
   TextEditingController fileName = TextEditingController();
   PlatformFile? pickedFile;
   UploadTask? uploadTask;
-  Future selectFile() async {
-    final res = await FilePicker.platform.pickFiles();
-    if (res == null) return;
-    setState(() {
-      pickedFile = res.files.first;
-    });
-  }
-
-  Future uploadFile() async {
-    final path = '${widget.text}/${pickedFile!.name}';
-    print(path);
-    final file = File(pickedFile!.path!);
-
-    final ref = FirebaseStorage.instance.ref().child(path);
-    uploadTask = ref.putFile(file);
-  }
 
   // to download file use ref stored in firebase
   Future downloadFile(Reference ref) async {
@@ -57,6 +39,7 @@ class _NotesViewState extends State<NotesView> {
       // needs to fixed
       setState(() {
         savename = 'file ${index + 1}.pdf';
+        //print(pickedFile?.name.toString());
       });
       String savePath = dir!.path + "/${savename}";
       await Dio().download(url, savePath);
@@ -70,30 +53,11 @@ class _NotesViewState extends State<NotesView> {
     }
   }
 
-  Future<void> showDialogTile() async {
-    return showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: const Text('Select a file to server!!'),
-              actions: [
-                TextButton(
-                  onPressed: selectFile,
-                  child: const Text('choose'),
-                ),
-                TextButton(
-                  onPressed: uploadFile,
-                  child: const Text('upload'),
-                ),
-              ],
-            ));
-  }
+  void feedBack() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.text),
-      ),
       body: FutureBuilder<ListResult>(
         future: futureFiles,
         builder: (context, snapshot) {
@@ -136,8 +100,8 @@ class _NotesViewState extends State<NotesView> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: showDialogTile,
-        child: const Icon(Icons.upload_file),
+        onPressed: feedBack,
+        child: const Icon(Icons.feedback_outlined),
       ),
     );
   }

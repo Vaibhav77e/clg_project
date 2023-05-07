@@ -5,12 +5,15 @@ class CustomTextField extends StatelessWidget {
   final String text;
   String? Function(String?)? validator;
   TextInputType? keyboardType;
+  void Function(String?)? onSaved;
 
-  CustomTextField(
-      {required this.controller,
-      required this.text,
-      required this.validator,
-      required this.keyboardType});
+  CustomTextField({
+    required this.controller,
+    required this.text,
+    required this.validator,
+    required this.keyboardType,
+    required this.onSaved,
+  });
 
   @override
   Widget build(BuildContext context) {

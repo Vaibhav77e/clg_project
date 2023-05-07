@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:clg_project/widgets/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../widgets/customTextForm.dart';
+import '../../../widgets/customPasswordField.dart';
+import '../../../widgets/customTextForm.dart';
 import 'login.dart';
-import '../widgets/alert.dart';
+import '../../../widgets/alert.dart';
+import 'package:http/http.dart' as http;
+
 // import 'model.dart';
 
 class Register extends StatefulWidget {
@@ -28,8 +32,9 @@ class _RegisterState extends State<Register> {
   final TextEditingController name = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController mobile = TextEditingController();
-  bool _isObscure = true;
-  bool _isObscure2 = true;
+  final TextEditingController usnController = TextEditingController();
+  final bool _isObscure = true;
+  final bool _isObscure2 = true;
   final String assetName = 'assets/YIt_2.svg';
 
   File? file;
@@ -87,6 +92,7 @@ class _RegisterState extends State<Register> {
                             }
                           },
                           keyboardType: TextInputType.emailAddress,
+                          onSaved: (value) {},
                         ),
                         const SizedBox(
                           height: 20,
@@ -107,43 +113,33 @@ class _RegisterState extends State<Register> {
                             }
                           },
                           keyboardType: TextInputType.emailAddress,
+                          onSaved: (value) {},
                         ),
                         const SizedBox(
                           height: 20,
                         ),
 
-                        TextFormField(
-                          obscureText: _isObscure,
+                        //usn/employee
+                        CustomTextField(
+                          controller: usnController,
+                          text: 'USN/Empolyee id',
+                          validator: (value) {
+                            if (value!.length == 0) {
+                              return "Field can't be left empty";
+                            }
+                          },
+                          keyboardType: null,
+                          onSaved: (value) {
+                            usnController.text = value!;
+                          },
+                        ),
+
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CustomPasswordField(
                           controller: passwordController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                }),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Password',
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 15.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue.shade700),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
+                          text: 'Password',
                           validator: (value) {
                             RegExp regex = RegExp(r'^.{6,}$');
                             if (value!.isEmpty) {
@@ -155,43 +151,18 @@ class _RegisterState extends State<Register> {
                               return null;
                             }
                           },
-                          onChanged: (value) {},
+                          obscureText: _isObscure,
+                          onSaved: (value) {
+                            passwordController.text = value!;
+                          },
                         ),
-                        SizedBox(
+
+                        const SizedBox(
                           height: 20,
                         ),
-                        TextFormField(
-                          obscureText: _isObscure2,
+                        CustomPasswordField(
                           controller: confirmpassController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure2
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure2 = !_isObscure2;
-                                  });
-                                }),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Confirm Password',
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 15.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue.shade700),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                          ),
+                          text: 'Confirm Password',
                           validator: (value) {
                             if (confirmpassController.text !=
                                 passwordController.text) {
@@ -200,15 +171,17 @@ class _RegisterState extends State<Register> {
                               return null;
                             }
                           },
-                          onChanged: (value) {},
+                          obscureText: _isObscure2,
+                          onSaved: (value) {},
                         ),
-                        SizedBox(
+
+                        const SizedBox(
                           height: 20,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               "Role : ",
                               style: TextStyle(
                                 fontSize: 20,
@@ -227,7 +200,7 @@ class _RegisterState extends State<Register> {
                                   value: dropDownStringItem,
                                   child: Text(
                                     dropDownStringItem,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.purple,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
@@ -245,7 +218,7 @@ class _RegisterState extends State<Register> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
 
@@ -299,13 +272,34 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  // void signUp(String email, String password, String rool) async {
+  //   CircularProgressIndicator();
+  //   try {
+  //     if (_formkey.currentState!.validate()) {
+  //       await _auth
+  //           .createUserWithEmailAndPassword(email: email, password: password)
+  //           .then((value) => {postDetailsToFirestore(email)})
+  //           .catchError((e) {
+  //         print(e.toString());
+  //       });
+  //     }
+  //   } catch (e) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (builderctx) => Alert(
+  //               text: e.toString(),
+  //             ));
+  //     Navigator.of(context).pop();
+  //   }
+  // }
+
   void signUp(String email, String password, String rool) async {
     CircularProgressIndicator();
     try {
       if (_formkey.currentState!.validate()) {
         await _auth
             .createUserWithEmailAndPassword(email: email, password: password)
-            .then((value) => {postDetailsToFirestore(email, rool)})
+            .then((value) => {postToFirebasedara(email)})
             .catchError((e) {
           print(e.toString());
         });
@@ -320,14 +314,51 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  postDetailsToFirestore(String email, String rool) async {
+//   postDetailsToFirestore(String email, String rool) async {
+//     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+//     var user = _auth.currentUser;
+//     CollectionReference ref = firebaseFirestore.collection('users');
+//     ref.doc(user!.uid).set({
+//       'name': name.text,
+//       'email': emailController.text,
+//       'role': rool,
+//     });
+//     Navigator.pushReplacement(
+//         context, MaterialPageRoute(builder: (context) => LoginPage()));
+//   }
+// }
+
+  postDetailsToFirestore(
+    String email,
+  ) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
     CollectionReference ref = firebaseFirestore.collection('users');
-    ref
-        .doc(user!.uid)
-        .set({'name': name.text, 'email': emailController.text, 'role': rool});
+    ref.doc(user!.uid).set({
+      //'name': name.text,
+      'email': emailController.text,
+    });
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
+
+  postToFirebasedara(
+    String email,
+  ) async {
+    const url =
+        'https://clg-project-9ffdf-default-rtdb.asia-southeast1.firebasedatabase.app/usersData.json';
+    try {
+      final res = await http.post(Uri.parse(url),
+          body: json.encode({
+            'name': name.text,
+            'USN': usnController.text,
+            'email': emailController.text
+          }));
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
