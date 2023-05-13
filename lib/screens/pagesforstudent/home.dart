@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../reuableWidget/subjectWidget.dart';
 import '../../models/subject.dart';
-import '../views/notes.dart';
+import '../../adminpages/notes.dart';
 
 class Home extends StatefulWidget {
   @override

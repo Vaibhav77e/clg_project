@@ -1,9 +1,48 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
-class StudentDetails extends StatelessWidget {
+class StudentDetails extends StatefulWidget {
+  @override
+  State<StudentDetails> createState() => _StudentDetailsState();
+}
+
+class _StudentDetailsState extends State<StudentDetails> {
   String name = '';
+
   String usn = '';
+
   String rfid = '';
+  String formatted = '';
+
+  void checkDate() async {
+    try {
+      showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2060))
+          .then((value) {
+        setState(() {
+          // dateTime = value;
+          final DateFormat formatter = DateFormat('yyyy-MM-dd');
+          formatted = formatter.format(value!);
+        });
+      });
+      // dateTime = formatted as DateTime?;
+      print(formatted);
+
+      const url =
+          'http://www.greedandfear.fun:9999/api/get-attendance-by-date/';
+      var response = await http.post(Uri.parse(url),
+          body: {"start_date": "2023-05-21", "end_date": formatted});
+      var responseData = json.decode(response.body);
+      print(responseData);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +73,7 @@ class StudentDetails extends StatelessWidget {
                     CircleAvatar(
                       radius: 5,
                       backgroundColor: Colors.green,
-                    )
+                    ),
                   ],
                 ),
                 Text(
@@ -49,6 +88,10 @@ class StudentDetails extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: checkDate,
+        child: const Icon(Icons.get_app),
       ),
     );
   }

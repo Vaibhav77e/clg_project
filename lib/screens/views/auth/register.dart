@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:clg_project/models/users.dart';
 import 'package:clg_project/widgets/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,6 +46,8 @@ class _RegisterState extends State<Register> {
   var _currentItemSelected = "Student";
   var rool = "Student";
 
+  Users userD = Users(email: '', usn: '', password: '', role: '');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +61,7 @@ class _RegisterState extends State<Register> {
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.all(12),
+                  margin: const EdgeInsets.all(12),
                   child: Form(
                     key: _formkey,
                     child: Column(
@@ -299,7 +302,7 @@ class _RegisterState extends State<Register> {
       if (_formkey.currentState!.validate()) {
         await _auth
             .createUserWithEmailAndPassword(email: email, password: password)
-            .then((value) => {postToFirebasedara(email)})
+            .then((value) => {postToFirebasedara(userD)})
             .catchError((e) {
           print(e.toString());
         });
@@ -342,9 +345,7 @@ class _RegisterState extends State<Register> {
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
-  postToFirebasedara(
-    String email,
-  ) async {
+  postToFirebasedara(Users newUserValue) async {
     const url =
         'https://clg-project-9ffdf-default-rtdb.asia-southeast1.firebasedatabase.app/usersData.json';
     try {
@@ -352,8 +353,15 @@ class _RegisterState extends State<Register> {
           body: json.encode({
             'name': name.text,
             'USN': usnController.text,
-            'email': emailController.text
+            'email': emailController.text,
+            'role': rool,
           }));
+      final newUserData = Users(
+          email: newUserValue.email,
+          usn: newUserValue.usn,
+          password: newUserValue.password,
+          role: newUserValue.role);
+      print(newUserData.role);
 
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));

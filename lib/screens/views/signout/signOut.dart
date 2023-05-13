@@ -9,23 +9,36 @@ class Signout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const Text('Name'),
-          const Text('USN'),
-          ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                // ignore: use_build_context_synchronously
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginPage(),
-                  ),
-                );
-              },
-              child: const Text('Sign-out?'))
-        ],
+      appBar: AppBar(
+        // backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const Text('Name'),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text('USN'),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ),
+                  );
+                },
+                child: const Text('Sign-out?'))
+          ],
+        ),
       ),
     );
   }

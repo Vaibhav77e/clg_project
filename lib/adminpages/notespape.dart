@@ -1,4 +1,4 @@
-import 'package:clg_project/screens/views/notes.dart';
+import 'package:clg_project/adminpages/notes.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_svg/svg.dart';
 // import '../models/subject.dart';

@@ -2,8 +2,7 @@ import 'package:clg_project/screens/pagesforstudent/home.dart';
 import 'package:clg_project/screens/pagesforstudent/questionpagesForStudents.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../adminpages/notespape.dart';
-import '../../../adminpages/questionpaper.dart';
+
 import '../../pagesforstudent/explore.dart';
 import '../../../widgets/bottonForStudent.dart';
 
@@ -11,7 +10,8 @@ import '../signout/signOut.dart';
 import 'login.dart';
 
 class Student extends StatefulWidget {
-  const Student({super.key});
+  String text;
+  Student({required this.text});
 
   @override
   State<Student> createState() => _StudentState();
@@ -39,7 +39,8 @@ class _StudentState extends State<Student> {
           selectedTab: (index) => navigatorBottomBar(index)),
       appBar: AppBar(
         title: Text(
-          _pages[_selectIndex].toString(),
+          // _pages[_selectIndex].toString(),
+          widget.text,
           style: const TextStyle(color: Colors.black),
         ),
         elevation: 0,

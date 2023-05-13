@@ -20,6 +20,7 @@ class _NotesViewState extends State<NotesView> {
   int index = 0;
   String savename = '';
   late Future<ListResult> futureFiles;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -45,6 +46,7 @@ class _NotesViewState extends State<NotesView> {
 
     final ref = FirebaseStorage.instance.ref().child(path);
     uploadTask = ref.putFile(file);
+    Navigator.of(context).pop();
   }
 
   // to download file use ref stored in firebase

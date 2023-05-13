@@ -4,7 +4,7 @@ import 'package:clg_project/screens/views/auth/student.dart';
 import 'package:clg_project/screens/views/auth/teacher.dart';
 import 'package:clg_project/widgets/customPasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../widgets/button.dart';
@@ -13,7 +13,12 @@ import '../../../widgets/customTextForm.dart';
 import 'register.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../models/users.dart';
+
 class LoginPage extends StatefulWidget {
+  // String role;
+  // LoginPage({required this.role});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -27,6 +32,15 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usnController = TextEditingController();
   final String assetName = 'assets/YIt_2.svg';
   final String USN = '';
+  List<Users> _userList = [];
+
+  List<Users> get userList {
+    return [..._userList];
+  }
+
+  // Users newUser = Users(email: '', usn: '', password: '');
+
+  int index = 0;
 
   final _auth = FirebaseAuth.instance;
   @override
@@ -36,22 +50,7 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              // logo
-              // Container(
-              //   color: Colors.blue,
-              //   child: SvgPicture.asset(
-              //     'Yit_2.svg',
-              //     semanticsLabel: 'Clg logo',
-              //     width: 120,
-              //     height: 120,
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-
               Container(
-                // color: Colors.orangeAccent[700],
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: Center(
@@ -159,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                               //     passwordController.text);
                               // cutomlogin(usnController.text);
                               newsignIn(emailController.text,
-                                  passwordController.text);
+                                  passwordController.text, usnController.text);
                             },
                             text: 'Sign In',
                           ),
@@ -241,7 +240,9 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => Student(),
+              builder: (context) => Student(
+                text: usnController.text,
+              ),
             ),
           );
         }
@@ -272,45 +273,38 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void newroute() async {
+  void newroute(String usn, String email, String password) async {
     const uri =
         'https://clg-project-9ffdf-default-rtdb.asia-southeast1.firebasedatabase.app/usersData.json';
     try {
       final res = await http.get(Uri.parse(uri));
-      final extratedData = json.decode(res.body);
-      print(extratedData);
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Student(),
-        ),
-      );
+      final extratedData = json.decode(res.body) as Map<String, dynamic>;
+      print('val1:$extratedData');
+      if (extratedData != null) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Student(
+              text: usn,
+            ),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Teacher(),
+          ),
+        );
+      }
     } catch (e) {
       print(e.toString());
     }
   }
 
-  // void newroute(String email) {
-  //   final ref = FirebaseDatabase.instance.ref();
-  //   ref.child('usersData').orderByChild('email').equalTo(email).once().then(
-  //     (DatabaseEvent event) {
-  //       DataSnapshot snapshot = event.snapshot;
-  //       if (snapshot.exists) {
-  //         // snapshot.forEach((child) {
-  //         //   Map<dynamic, dynamic> data = child.value! as Map<dynamic, dynamic>;
-  //         //   String? userType = data["userType"] as String?;
-  //         //   print('User type: $userType');
-  //         // });
-  //       } else {
-  //         print('No data found for email: $email');
-  //       }
-  //     },
-  //   );
-  // }
-
   // testing
-  void newsignIn(String email, String password) async {
+  void newsignIn(String email, String password, String usn) async {
     if (_formkey.currentState!.validate()) {
       try {
         UserCredential userCredential =
@@ -318,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
           email: email,
           password: password,
         );
-        newroute();
+        newroute(usn, email, password);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
