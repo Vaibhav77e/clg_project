@@ -280,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
       final res = await http.get(Uri.parse(uri));
       final extratedData = json.decode(res.body) as Map<String, dynamic>;
       print('val1:$extratedData');
-      if (extratedData != null) {
+      if (extratedData == null) {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,

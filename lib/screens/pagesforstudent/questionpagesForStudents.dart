@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:dio/dio.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'dart:io';
+// import 'package:dio/dio.dart';
+// import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
+// import 'package:path_provider/path_provider.dart';
 
 class QuestionPagesforStudents extends StatefulWidget {
   const QuestionPagesforStudents({super.key});
@@ -30,28 +30,28 @@ class _QuestionPagesforStudentsState extends State<QuestionPagesforStudents> {
   UploadTask? uploadTask;
 
   // to download file use ref stored in firebase
-  Future downloadFile(Reference ref) async {
-    try {
-      final url = await ref.getDownloadURL();
-      final tempdir = await getTemporaryDirectory();
-      final path = File('${tempdir.path}/${ref.name}');
-      var dir = await DownloadsPathProvider.downloadsDirectory;
-      // needs to fixed
-      setState(() {
-        savename = 'file ${index + 1}.pdf';
-        //print(pickedFile?.name.toString());
-      });
-      String savePath = dir!.path + "/${savename}";
-      await Dio().download(url, savePath);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Download ${ref.name}'),
-        ),
-      );
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  // Future downloadFile(Reference ref) async {
+  //   try {
+  //     final url = await ref.getDownloadURL();
+  //     final tempdir = await getTemporaryDirectory();
+  //     final path = File('${tempdir.path}/${ref.name}');
+  //     var dir = await DownloadsPathProvider.downloadsDirectory;
+  //     // needs to fixed
+  //     setState(() {
+  //       savename = 'file ${index + 1}.pdf';
+  //       //print(pickedFile?.name.toString());
+  //     });
+  //     String savePath = dir!.path + "/${savename}";
+  //     await Dio().download(url, savePath);
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Download ${ref.name}'),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   void feedBack() {}
 
@@ -79,7 +79,8 @@ class _QuestionPagesforStudentsState extends State<QuestionPagesforStudents> {
                       child: ListTile(
                         title: Text(file.name),
                         trailing: IconButton(
-                            onPressed: () => downloadFile(file),
+                            //onPressed: () => downloadFile(file),
+                            onPressed: () {},
                             icon: const Icon(Icons.download)),
                       ),
                     ),

@@ -1,13 +1,14 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:path_provider/path_provider.dart';
+// import 'package:dio/dio.dart';
+// import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
+
+//import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 
 class QuestionPages extends StatefulWidget {
   @override
@@ -49,38 +50,41 @@ class _QuestionPagesState extends State<QuestionPages> {
     // print('Download Link : $urlDownload');
   }
 
+////// commented due to error ////////
   // to download file use ref stored in firebase
-  Future downloadFile(Reference ref) async {
-    try {
-      ////-----------only visibile to app not to user -------//////////
-      // // not visible to user download and save using path provider packages
-      // final dir =
-      //     await getApplicationDocumentsDirectory(); // only visible to app not the user
 
-      // final file = File('${dir.path}/${ref.name}');
-      // await ref.writeToFile(file);
+  // Future downloadFile(Reference ref) async {
+  //   try {
+  //     ////-----------only visibile to app not to user -------//////////
+  //     // // not visible to user download and save using path provider packages
+  //     // final dir =
+  //     //     await getApplicationDocumentsDirectory(); // only visible to app not the user
 
-      ////-----------for to make visible to user -------//////////
-      final url = await ref.getDownloadURL();
-      final tempdir = await getTemporaryDirectory();
-      final path = File('${tempdir.path}/${ref.name}');
-      var dir = await DownloadsPathProvider.downloadsDirectory;
-      // needs to fixed
-      setState(() {
-        savename = 'file ${index + 1}.pdf';
-        //print(pickedFile?.name.toString());
-      });
-      String savePath = dir!.path + "/${savename}";
-      await Dio().download(url, savePath);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Download ${ref.name}'),
-        ),
-      );
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  //     // final file = File('${dir.path}/${ref.name}');
+  //     // await ref.writeToFile(file);
+
+  //     ////-----------for to make visible to user -------//////////
+  //     final url = await ref.getDownloadURL();
+  //     final tempdir = await getTemporaryDirectory();
+  //     // ignore: unused_local_variable
+  //     final path = File('${tempdir.path}/${ref.name}');
+  //     var dir = await DownloadsPathProvider.downloadsDirectory;
+  //     // needs to fixed
+  //     setState(() {
+  //       savename = 'file ${index + 1}.pdf';
+  //       //print(pickedFile?.name.toString());
+  //     });
+  //     String savePath = dir!.path + "/${savename}";
+  //     await Dio().download(url, savePath);
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Download ${ref.name}'),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +110,8 @@ class _QuestionPagesState extends State<QuestionPages> {
                       child: ListTile(
                         title: Text(file.name),
                         trailing: IconButton(
-                            onPressed: () => downloadFile(file),
+                            // onPressed: () => downloadFile(file),
+                            onPressed: () {},
                             icon: const Icon(Icons.download)),
                       ),
                     ),

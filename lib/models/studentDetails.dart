@@ -1,8 +1,12 @@
-class StudentDetails {
-  final String rfid;
-  final String studentName;
+class StudentDetailsModel {
+  final String student_id;
+  final String name;
   final String usn;
+  final String phoneum;
 
-  StudentDetails(
-      {required this.rfid, required this.studentName, required this.usn});
+  StudentDetailsModel(
+      {required this.student_id,
+      required this.name,
+      required this.usn,
+      required this.phoneum});
 }

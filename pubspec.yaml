@@ -45,11 +45,12 @@ dependencies:
   open_file: ^3.3.1
   path_provider: ^2.0.14
   dio: ^5.1.1
-  downloads_path_provider_28: ^0.1.2
   provider: ^6.0.5
   http: ^0.13.6
   firebase_database: ^10.1.2
   intl: ^0.17.0
+  downloads_path_provider_28: ^0.1.2
+  percent_indicator: ^4.2.3
 
 
 

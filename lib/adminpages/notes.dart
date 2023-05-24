@@ -8,6 +8,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:path_provider/path_provider.dart';
 
+import 'package:percent_indicator/percent_indicator.dart';
+
 class NotesView extends StatefulWidget {
   final String text;
   const NotesView({required this.text});
@@ -20,6 +22,10 @@ class _NotesViewState extends State<NotesView> {
   int index = 0;
   String savename = '';
   late Future<ListResult> futureFiles;
+
+  var isDownloadStarted = false;
+  var isDownloadFinished = false;
+  var downloadProgress = 0;
 
   @override
   void initState() {
@@ -52,16 +58,37 @@ class _NotesViewState extends State<NotesView> {
   // to download file use ref stored in firebase
   Future downloadFile(Reference ref) async {
     try {
+      isDownloadStarted = true;
+      isDownloadFinished = false;
+      downloadProgress = 0;
+      setState(() {});
+
       final url = await ref.getDownloadURL();
       final tempdir = await getTemporaryDirectory();
+      // ignore: unused_local_variable
       final path = File('${tempdir.path}/${ref.name}');
       var dir = await DownloadsPathProvider.downloadsDirectory;
+
       // needs to fixed
       setState(() {
         savename = 'file ${index + 1}.pdf';
+        //savename = ' $ref.pdf';
       });
       String savePath = dir!.path + "/${savename}";
       await Dio().download(url, savePath);
+
+      while (downloadProgress < 100) {
+        downloadProgress += 10;
+        setState(() {});
+        if (downloadProgress == 100) {
+          isDownloadFinished = true;
+          isDownloadStarted = false;
+          setState(() {});
+          break;
+        }
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Download ${ref.name}'),
@@ -116,8 +143,35 @@ class _NotesViewState extends State<NotesView> {
                           borderRadius: BorderRadius.circular(12)),
                       child: ListTile(
                         title: Text(file.name),
+                        // trailing: Column(
+                        //   children: [
+                        //     Visibility(
+                        //       visible: isDownloadStarted,
+                        //       child: CircularPercentIndicator(
+                        //         radius: 20,
+                        //         lineWidth: 3,
+                        //         percent: (downloadProgress / 100),
+                        //         center: Text(
+                        //           '$downloadProgress%',
+                        //           style: const TextStyle(
+                        //               fontSize: 12, color: Colors.green),
+                        //         ),
+                        //         progressColor: Colors.green,
+                        //       ),
+                        //     ),
+                        //     Visibility(
+                        //       visible: !isDownloadStarted,
+                        //       child: IconButton(
+                        //           onPressed: () => downloadFile(file),
+                        //           //onPressed: () {},
+                        //           icon: const Icon(Icons.download)),
+                        //     ),
+                        //   ],
+                        // ),
+
                         trailing: IconButton(
                             onPressed: () => downloadFile(file),
+                            //onPressed: () {},
                             icon: const Icon(Icons.download)),
                       ),
                     ),
