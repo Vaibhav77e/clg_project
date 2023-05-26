@@ -58,10 +58,10 @@ class _NotesViewState extends State<NotesView> {
   // to download file use ref stored in firebase
   Future downloadFile(Reference ref) async {
     try {
-      isDownloadStarted = true;
-      isDownloadFinished = false;
-      downloadProgress = 0;
-      setState(() {});
+      // isDownloadStarted = true;
+      // isDownloadFinished = false;
+      // downloadProgress = 0;
+      // setState(() {});
 
       final url = await ref.getDownloadURL();
       final tempdir = await getTemporaryDirectory();
@@ -77,17 +77,17 @@ class _NotesViewState extends State<NotesView> {
       String savePath = dir!.path + "/${savename}";
       await Dio().download(url, savePath);
 
-      while (downloadProgress < 100) {
-        downloadProgress += 10;
-        setState(() {});
-        if (downloadProgress == 100) {
-          isDownloadFinished = true;
-          isDownloadStarted = false;
-          setState(() {});
-          break;
-        }
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
+      // while (downloadProgress < 100) {
+      //   downloadProgress += 10;
+      //   setState(() {});
+      //   if (downloadProgress == 100) {
+      //     isDownloadFinished = true;
+      //     isDownloadStarted = false;
+      //     setState(() {});
+      //     break;
+      //   }
+      //   await Future.delayed(const Duration(milliseconds: 500));
+      // }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -171,7 +171,6 @@ class _NotesViewState extends State<NotesView> {
 
                         trailing: IconButton(
                             onPressed: () => downloadFile(file),
-                            //onPressed: () {},
                             icon: const Icon(Icons.download)),
                       ),
                     ),

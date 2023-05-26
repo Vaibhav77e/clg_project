@@ -1,8 +1,10 @@
+import 'package:clg_project/testpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../adminpages/notespape.dart';
 import '../../../adminpages/questionpaper.dart';
+import '../../../adminpages/reportPage.dart';
 import '../../../adminpages/studentDetail.dart';
 import '../../../widgets/bottonav.dart';
 import '../signout/signOut.dart';
@@ -28,6 +30,7 @@ class _TeacherState extends State<Teacher> {
     StudentDetails(),
     NotesPage(),
     QuestionPages(),
+    ReportPage(),
   ];
 
   @override
@@ -59,6 +62,20 @@ class _TeacherState extends State<Teacher> {
                 )),
           ),
         ),
+        actions: [
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(
+          //           MaterialPageRoute(builder: (context) => ReportPage()));
+          //     },
+          //     icon: const Text('View Report')),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => TestPage()));
+              },
+              icon: const Text('View Report')),
+        ],
       ),
       body: _pages[_selectIndex],
     );

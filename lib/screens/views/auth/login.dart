@@ -15,6 +15,8 @@ import 'package:http/http.dart' as http;
 
 import '../../../models/users.dart';
 
+import '../../../models/cred.dart';
+
 class LoginPage extends StatefulWidget {
   // String role;
   // LoginPage({required this.role});
@@ -43,6 +45,12 @@ class _LoginPageState extends State<LoginPage> {
   int index = 0;
 
   final _auth = FirebaseAuth.instance;
+  final _cred = CredData();
+
+  void customLoginFor() {
+    print(_cred.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -323,14 +331,5 @@ class _LoginPageState extends State<LoginPage> {
         print(e.toString());
       }
     }
-  }
-}
-
-Future<void> cutomlogin(String token) async {
-  try {
-    final userCred = FirebaseAuth.instance.signInWithCustomToken(token);
-    print("success");
-  } on FirebaseAuthException catch (e) {
-    print(e.toString());
   }
 }
